@@ -1,0 +1,51 @@
+﻿@model MyDiabeticSystem.Web.Data.Entities.Check
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Check</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Carbohydrates)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Carbohydrates)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Glucometry)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Glucometry)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Date)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Date)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Bolus)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Bolus)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Hb1)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Hb1)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Delete" class="btn btn-default" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>

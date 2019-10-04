@@ -1,0 +1,48 @@
+﻿@model MyDiabeticSystem.Web.Data.Entities.Check
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Check</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Carbohydrates)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Carbohydrates)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Glucometry)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Glucometry)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Date)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Date)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Bolus)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Bolus)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Hb1)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Hb1)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
