@@ -5,11 +5,13 @@
 
     public class DataContext:DbContext
     {
-        public DbSet<Check> Checks { get; set; }
-
+        
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
         }
 
+        public DbSet<Doctor> Doctors { get; set; }
+        public DbSet<Check> Checks { get; set; }
+        
     }
 }
