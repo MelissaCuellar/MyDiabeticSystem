@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MyDiabeticSystem.Web.Data.Entities
 {
-
-    public class Doctor
+    public class Patient
     {
         public int Id { get; set; }
 
@@ -27,13 +29,22 @@ namespace MyDiabeticSystem.Web.Data.Entities
         [MaxLength(20, ErrorMessage = "The {0} field can not have more than {1} characters.")]
         public string CellPhone { get; set; }
 
+        [Display(Name = "Date of birth")]
+        public DateTime DateBirth { get; set; }
+
+        [Display(Name ="Can edit?")]
+        public bool CanEdit => false; 
+
         [Display(Name = "Full Name")]
         public string FullName => $"{FirstName} {LastName}";
 
         public string FullNameWithDocument => $"{FirstName} {LastName} - {Document}";
 
-        public ICollection<Patient> Patients { get; set; }
+        [Display(Name = "Date of birth")]
+        [Required(ErrorMessage = "The field {0} is mandatory.")]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}", ApplyFormatInEditMode = true)]
+        public DateTime StartDateLocal => DateBirth.ToLocalTime();
+      
+
     }
-
 }
-

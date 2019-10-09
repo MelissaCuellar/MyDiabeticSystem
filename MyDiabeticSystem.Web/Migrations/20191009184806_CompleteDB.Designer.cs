@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyDiabeticSystem.Web.Data;
 
 namespace MyDiabeticSystem.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20191009184806_CompleteDB")]
+    partial class CompleteDB
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -63,7 +65,11 @@ namespace MyDiabeticSystem.Web.Migrations
                         .IsRequired()
                         .HasMaxLength(50);
 
+                    b.Property<int?>("PatientId");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("PatientId");
 
                     b.ToTable("Doctors");
                 });
@@ -99,8 +105,6 @@ namespace MyDiabeticSystem.Web.Migrations
 
                     b.Property<DateTime>("DateBirth");
 
-                    b.Property<int?>("DoctorId");
-
                     b.Property<string>("Document")
                         .IsRequired()
                         .HasMaxLength(20);
@@ -114,8 +118,6 @@ namespace MyDiabeticSystem.Web.Migrations
                         .HasMaxLength(50);
 
                     b.HasKey("Id");
-
-                    b.HasIndex("DoctorId");
 
                     b.ToTable("Patients");
                 });
@@ -191,18 +193,18 @@ namespace MyDiabeticSystem.Web.Migrations
                         .HasForeignKey("PatientId");
                 });
 
+            modelBuilder.Entity("MyDiabeticSystem.Web.Data.Entities.Doctor", b =>
+                {
+                    b.HasOne("MyDiabeticSystem.Web.Data.Entities.Patient")
+                        .WithMany("Doctors")
+                        .HasForeignKey("PatientId");
+                });
+
             modelBuilder.Entity("MyDiabeticSystem.Web.Data.Entities.Parameter", b =>
                 {
                     b.HasOne("MyDiabeticSystem.Web.Data.Entities.Patient", "Patient")
                         .WithMany()
                         .HasForeignKey("PatientId");
-                });
-
-            modelBuilder.Entity("MyDiabeticSystem.Web.Data.Entities.Patient", b =>
-                {
-                    b.HasOne("MyDiabeticSystem.Web.Data.Entities.Doctor")
-                        .WithMany("Patients")
-                        .HasForeignKey("DoctorId");
                 });
 
             modelBuilder.Entity("MyDiabeticSystem.Web.Data.Entities.Ratio", b =>
