@@ -2,14 +2,17 @@
 {
     using Microsoft.EntityFrameworkCore;
     using MyDiabeticSystem.Web.Data.Entities;
+    using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
-    public class DataContext:DbContext
+
+    public class DataContext: IdentityDbContext<User>
     {
         
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
         }
 
+        public DbSet<Manager> Managers { get; set; }
         public DbSet<Doctor> Doctors { get; set; }
         public DbSet<Check> Checks { get; set; }
         public DbSet<Parameter> Parameters { get; set; }

@@ -1,4 +1,5 @@
 ﻿using MyDiabeticSystem.Web.Data.Entities;
+using MyDiabeticSystem.Web.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,69 +10,85 @@ namespace MyDiabeticSystem.Web.Data
     public class SeedDb
     {
         private readonly DataContext _context;
+        private readonly IUserHelper _userHelper;
 
-        public SeedDb(DataContext context)
+        public SeedDb(DataContext context, IUserHelper userHelper)
         {
             _context = context;
+            _userHelper = userHelper;
         }
 
         public async Task SeedAsync()
         {
             await _context.Database.EnsureCreatedAsync();
-            await CheckDoctorsAsync();
-            await CheckPatientsAsync();
+            await CheckRoles();
+            var manager = await CheckUserAsync("1146437549", "Melissa", "Cuellar", "meli.cuellar0117@gmail.com", "301 474 7485", "Manager");
+            var doctor = await CheckUserAsync("2020", "Juan", "Zuluaga", "jzuluaga55@hotmail.com", "350 634 2747", "Doctor");
+            
+            await CheckDoctorsAsync(doctor);
+            
+            await CheckManagerAsync(manager);
+
         }
 
-        private async Task CheckDoctorsAsync()
+        private async Task CheckManagerAsync(User user)
         {
-            if(!_context.Doctors.Any())
+            if (!_context.Managers.Any())
             {
-                AddDoctor("123456789", "Ramon", "Gamboa", "22222222");
-                AddDoctor("345456791", "Julian", "Martinez", "8888888");
-                AddDoctor("566789801", "Carlota", "Ruiz", "999999999");
+                _context.Managers.Add(new Manager { User = user });
                 await _context.SaveChangesAsync();
             }
         }
 
-        private void AddDoctor(string document, 
-            string firstName, 
-            string lastName, 
-            string cellPhone)
+        private async Task CheckDoctorsAsync(User user)
         {
-            _context.Doctors.Add(new Doctor
+            if (!_context.Doctors.Any())
             {
-                CellPhone = cellPhone,
-                Document = document,
-                FirstName = firstName,
-                LastName = lastName
-            });
-        }
-
-        private async Task CheckPatientsAsync()
-        {
-            if (!_context.Patients.Any())
-            {
-                AddPatient("123456789", "Maria", "Salcedo", "22222222", DateTime.Parse("04/18/2019"));
-                AddPatient("345456791", "Karla", "Martinez", "8888888", DateTime.Parse("04/18/1999"));
-                AddPatient("566789801", "Juan", "Perez", "999999999", DateTime.Parse("04/18/1980"));
+                _context.Doctors.Add(new Doctor { User = user });
                 await _context.SaveChangesAsync();
             }
         }
-        private void AddPatient(string document, 
-            string firstName, 
-            string lastName, 
-            string cellPhone, 
-            DateTime dateBirth)
+
+
+        
+       
+
+        private async Task CheckRoles()
         {
-            _context.Patients.Add(new Patient
+            await _userHelper.CheckRoleAsync("Manager");
+            await _userHelper.CheckRoleAsync("Doctor");
+            await _userHelper.CheckRoleAsync("Patient");
+        }
+
+        private async Task<User> CheckUserAsync(
+            string document,
+            string firstName,
+            string lastName,
+            string email,
+            string phone,
+            string role)
+        {
+            var user = await _userHelper.GetUserByEmailAsync(email);
+            if (user == null)
             {
-                CellPhone = cellPhone,
-                Document = document,
-                FirstName = firstName,
-                LastName = lastName,
-                DateBirth=dateBirth,
-                CanEdit=false
-            });
+                user = new User
+                {
+                    FirstName = firstName,
+                    LastName = lastName,
+                    Email = email,
+                    UserName = email,
+                    PhoneNumber = phone,
+                    Document = document
+                };
+
+                await _userHelper.AddUserAsync(user, "123456");
+                await _userHelper.AddUserToRoleAsync(user, role);
+
+                var token = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
+                await _userHelper.ConfirmEmailAsync(user, token);
+            }
+
+            return user;
         }
 
     }

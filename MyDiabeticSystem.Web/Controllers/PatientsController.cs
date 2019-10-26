@@ -54,7 +54,7 @@ namespace MyDiabeticSystem.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Document,FirstName,LastName,CellPhone,DateBirth,CanEdit")] Patient patient)
+        public async Task<IActionResult> Create([Bind("Id,DateBirth,CanEdit")] Patient patient)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +86,7 @@ namespace MyDiabeticSystem.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Document,FirstName,LastName,CellPhone,DateBirth,CanEdit")] Patient patient)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,DateBirth,CanEdit")] Patient patient)
         {
             if (id != patient.Id)
             {
