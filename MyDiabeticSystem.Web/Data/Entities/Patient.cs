@@ -30,10 +30,12 @@ namespace MyDiabeticSystem.Web.Data.Entities
         public string CellPhone { get; set; }
 
         [Display(Name = "Date of birth")]
+        [Required(ErrorMessage = "The field {0} is mandatory.")]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}", ApplyFormatInEditMode = true)]
         public DateTime DateBirth { get; set; }
 
-        [Display(Name ="Can edit?")]
-        public bool CanEdit => false; 
+        [Display(Name = "Can edit?")]
+        public bool CanEdit { get; set; } 
 
         [Display(Name = "Full Name")]
         public string FullName => $"{FirstName} {LastName}";
@@ -43,7 +45,7 @@ namespace MyDiabeticSystem.Web.Data.Entities
         [Display(Name = "Date of birth")]
         [Required(ErrorMessage = "The field {0} is mandatory.")]
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}", ApplyFormatInEditMode = true)]
-        public DateTime StartDateLocal => DateBirth.ToLocalTime();
+        public DateTime DateBirthLocal => DateBirth.ToLocalTime();
       
 
     }

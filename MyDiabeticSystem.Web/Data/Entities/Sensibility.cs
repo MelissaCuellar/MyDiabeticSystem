@@ -10,14 +10,28 @@ namespace MyDiabeticSystem.Web.Data.Entities
     {
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "The field {0} is mandatory.")]
-        public TimeSpan StartTime { get; set; }
+        [Display(Name = "Start Time")]
+        [Required(ErrorMessage = "The field {0} is mandatory")]
+        [DisplayFormat(DataFormatString = "{0:1900/01/01 HH:mm}", ApplyFormatInEditMode = true)]
+        public DateTime StartTime { get; set; }
 
-        [Required(ErrorMessage = "The field {0} is mandatory.")]
-        public TimeSpan EndTime { get; set; }
+        [Display(Name = "End Time")]
+        [Required(ErrorMessage = "The field {0} is mandatory")]
+        [DisplayFormat(DataFormatString = "{0:1900/01/01 HH:mm}", ApplyFormatInEditMode = true)]
+        public DateTime EndTime { get; set; }
 
         [Required(ErrorMessage = "The field {0} is mandatory.")]
         public double Value { get; set; }
+
+        [Display(Name = "Start Time")]
+        [Required(ErrorMessage = "The field {0} is mandatory.")]
+        [DisplayFormat(DataFormatString = "{0:1900/01/01 HH:mm}", ApplyFormatInEditMode = true)]
+        public DateTime StartTimeLocal => StartTime.ToLocalTime();
+
+        [Display(Name = "End Time")]
+        [Required(ErrorMessage = "The field {0} is mandatory.")]
+        [DisplayFormat(DataFormatString = "{0:1900/01/01 HH:mm}", ApplyFormatInEditMode = true)]
+        public DateTime EndTimeLocal => EndTime.ToLocalTime();
 
         public Patient Patient { get; set; }
     }

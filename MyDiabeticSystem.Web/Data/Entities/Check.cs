@@ -19,8 +19,10 @@
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}", ApplyFormatInEditMode = true)]
         public DateTime Date { get; set; }
 
+        [Display(Name = "Hour")]
         [Required(ErrorMessage = "The field {0} is mandatory")]
-        public TimeSpan Hour { get; set; }
+        [DisplayFormat(DataFormatString = "{0:1900/01/01 HH:mm}", ApplyFormatInEditMode = true)]
+        public DateTime Hour { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:N2}", ApplyFormatInEditMode = false)]
         public double Bolus { get; }
@@ -31,7 +33,12 @@
         [Display(Name = "Date")]
         [Required(ErrorMessage = "The field {0} is mandatory.")]
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}", ApplyFormatInEditMode = true)]
-        public DateTime StartDateLocal => Date.ToLocalTime();
+        public DateTime DateLocal => Date.ToLocalTime();
+
+        [Display(Name = "Hour")]
+        [Required(ErrorMessage = "The field {0} is mandatory.")]
+        [DisplayFormat(DataFormatString = "{0:1900/01/01 HH:mm}", ApplyFormatInEditMode = true)]
+        public DateTime HourLocal => Hour.ToLocalTime();
 
         public Patient Patient { get; set; }
 

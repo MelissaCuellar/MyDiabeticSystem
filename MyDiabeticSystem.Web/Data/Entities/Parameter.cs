@@ -17,6 +17,14 @@ namespace MyDiabeticSystem.Web.Data.Entities
         [Required (ErrorMessage = "The field {0} is mandatory.")]
         public double Value { get; set; }
 
+        [Display(Name = "Start Time")]
+        [DisplayFormat(DataFormatString = "{0:1900/01/01 HH:mm}", ApplyFormatInEditMode = true)]
+        public DateTime? StartTime { get; set; }
+
+        [Display(Name = "End Time")]
+        [DisplayFormat(DataFormatString = "{0:1900/01/01 HH:mm}", ApplyFormatInEditMode = true)]
+        public DateTime? EndTime { get; set; }
+
         public Patient Patient { get; set; }
 
     }
