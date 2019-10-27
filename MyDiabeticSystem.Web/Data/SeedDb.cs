@@ -23,7 +23,7 @@ namespace MyDiabeticSystem.Web.Data
             await _context.Database.EnsureCreatedAsync();
             await CheckRoles();
             var manager = await CheckUserAsync("1146437549", "Melissa", "Cuellar", "meli.cuellar0117@gmail.com", "301 474 7485", "Manager");
-            var doctor = await CheckUserAsync("2020", "Juan", "Zuluaga", "jzuluaga55@hotmail.com", "350 634 2747", "Doctor");
+            var doctor = await CheckUserAsync("1146437549", "Melissa", "Cuellar", "melissacuellar208847@correo.itm.edu.co", "301 474 7485", "Doctor");
             
             await CheckDoctorsAsync(doctor);
             

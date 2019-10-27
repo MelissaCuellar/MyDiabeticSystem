@@ -12,17 +12,18 @@ namespace MyDiabeticSystem.Web.Controllers
 {
     public class PatientsController : Controller
     {
-        private readonly DataContext _context;
+        private readonly DataContext _dataContext;
 
-        public PatientsController(DataContext context)
+        public PatientsController(DataContext dataContext)
         {
-            _context = context;
+            _dataContext = dataContext;
         }
 
         // GET: Patients
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _context.Patients.ToListAsync());
+            return View( _dataContext.Patients
+                .Include(o => o.User));
         }
 
         // GET: Patients/Details/5
@@ -33,7 +34,7 @@ namespace MyDiabeticSystem.Web.Controllers
                 return NotFound();
             }
 
-            var patient = await _context.Patients
+            var patient = await _dataContext.Patients
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (patient == null)
             {
@@ -58,8 +59,8 @@ namespace MyDiabeticSystem.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(patient);
-                await _context.SaveChangesAsync();
+                _dataContext.Add(patient);
+                await _dataContext.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(patient);
@@ -73,7 +74,7 @@ namespace MyDiabeticSystem.Web.Controllers
                 return NotFound();
             }
 
-            var patient = await _context.Patients.FindAsync(id);
+            var patient = await _dataContext.Patients.FindAsync(id);
             if (patient == null)
             {
                 return NotFound();
@@ -97,8 +98,8 @@ namespace MyDiabeticSystem.Web.Controllers
             {
                 try
                 {
-                    _context.Update(patient);
-                    await _context.SaveChangesAsync();
+                    _dataContext.Update(patient);
+                    await _dataContext.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -124,7 +125,7 @@ namespace MyDiabeticSystem.Web.Controllers
                 return NotFound();
             }
 
-            var patient = await _context.Patients
+            var patient = await _dataContext.Patients
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (patient == null)
             {
@@ -139,15 +140,15 @@ namespace MyDiabeticSystem.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var patient = await _context.Patients.FindAsync(id);
-            _context.Patients.Remove(patient);
-            await _context.SaveChangesAsync();
+            var patient = await _dataContext.Patients.FindAsync(id);
+            _dataContext.Patients.Remove(patient);
+            await _dataContext.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool PatientExists(int id)
         {
-            return _context.Patients.Any(e => e.Id == id);
+            return _dataContext.Patients.Any(e => e.Id == id);
         }
     }
 }

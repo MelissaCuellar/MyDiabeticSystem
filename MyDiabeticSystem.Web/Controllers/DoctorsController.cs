@@ -2,28 +2,39 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MyDiabeticSystem.Web.Data;
 using MyDiabeticSystem.Web.Data.Entities;
+using MyDiabeticSystem.Web.Helpers;
+using MyDiabeticSystem.Web.Models;
 
 namespace MyDiabeticSystem.Web.Controllers
 {
     public class DoctorsController : Controller
     {
-        private readonly DataContext _context;
+        private readonly DataContext _dataContext;
+        private readonly IUserHelper _userHelper;
 
-        public DoctorsController(DataContext context)
+        public DoctorsController(
+            DataContext dataContext,
+            IUserHelper userHelper)
         {
-            _context = context;
+            _dataContext = dataContext;
+            _userHelper = userHelper;
         }
+
+        
 
         // GET: Doctors
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _context.Doctors.ToListAsync());
+            return View(_dataContext.Doctors
+                .Include(o => o.User));
         }
+
 
         // GET: Doctors/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -33,7 +44,9 @@ namespace MyDiabeticSystem.Web.Controllers
                 return NotFound();
             }
 
-            var doctor = await _context.Doctors
+            var doctor = await _dataContext.Doctors
+                .Include(o => o.User)
+
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (doctor == null)
             {
@@ -54,15 +67,48 @@ namespace MyDiabeticSystem.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id")] Doctor doctor)
+        public async Task<IActionResult> Create(AddUserViewModel view)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(doctor);
-                await _context.SaveChangesAsync();
+                var user = await AddUser(view);
+                if (user == null)
+                {
+                    ModelState.AddModelError(string.Empty, "This email is already used.");
+                    return View(view);
+                }
+                var doctor = new Doctor
+                {
+                    User = user,
+                };
+                _dataContext.Doctors.Add(doctor);
+                await _dataContext.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(doctor);
+            return View(view);
+        }
+        private async Task<User> AddUser(AddUserViewModel view)
+        {
+            var user = new User
+            {
+                
+                Document = view.Document,
+                Email = view.Username,
+                FirstName = view.FirstName,
+                LastName = view.LastName,
+                PhoneNumber = view.PhoneNumber,
+                UserName = view.Username
+            };
+
+            var result = await _userHelper.AddUserAsync(user, view.Password);
+            if (result != IdentityResult.Success)
+            {
+                return null;
+            }
+
+            var newUser = await _userHelper.GetUserByEmailAsync(view.Username);
+            await _userHelper.AddUserToRoleAsync(newUser, "Doctor");
+            return newUser;
         }
 
         // GET: Doctors/Edit/5
@@ -73,7 +119,7 @@ namespace MyDiabeticSystem.Web.Controllers
                 return NotFound();
             }
 
-            var doctor = await _context.Doctors.FindAsync(id);
+            var doctor = await _dataContext.Doctors.FindAsync(id);
             if (doctor == null)
             {
                 return NotFound();
@@ -97,8 +143,8 @@ namespace MyDiabeticSystem.Web.Controllers
             {
                 try
                 {
-                    _context.Update(doctor);
-                    await _context.SaveChangesAsync();
+                    _dataContext.Update(doctor);
+                    await _dataContext.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -124,7 +170,7 @@ namespace MyDiabeticSystem.Web.Controllers
                 return NotFound();
             }
 
-            var doctor = await _context.Doctors
+            var doctor = await _dataContext.Doctors
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (doctor == null)
             {
@@ -139,15 +185,15 @@ namespace MyDiabeticSystem.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var doctor = await _context.Doctors.FindAsync(id);
-            _context.Doctors.Remove(doctor);
-            await _context.SaveChangesAsync();
+            var doctor = await _dataContext.Doctors.FindAsync(id);
+            _dataContext.Doctors.Remove(doctor);
+            await _dataContext.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool DoctorExists(int id)
         {
-            return _context.Doctors.Any(e => e.Id == id);
+            return _dataContext.Doctors.Any(e => e.Id == id);
         }
     }
 }
