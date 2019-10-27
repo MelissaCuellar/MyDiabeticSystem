@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using MyDiabeticSystem.Web.Data.Entities;
+using MyDiabeticSystem.Web.Models;
 using System.Threading.Tasks;
 
 namespace MyDiabeticSystem.Web.Helpers
@@ -19,6 +20,11 @@ namespace MyDiabeticSystem.Web.Helpers
         Task<string> GenerateEmailConfirmationTokenAsync(User user);
 
         Task<IdentityResult> ConfirmEmailAsync(User user, string token);
+
+        Task<SignInResult> LoginAsync(LoginViewModel model);
+
+        Task LogoutAsync();
+
 
     }
 }
