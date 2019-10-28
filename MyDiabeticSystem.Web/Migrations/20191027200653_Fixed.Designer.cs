@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyDiabeticSystem.Web.Data;
 
 namespace MyDiabeticSystem.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20191027200653_Fixed")]
+    partial class Fixed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -298,7 +300,7 @@ namespace MyDiabeticSystem.Web.Migrations
 
                     b.Property<int>("AccessFailedCount");
 
-                    b.Property<bool?>("CanEdit");
+                    b.Property<bool>("CanEdit");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
@@ -436,7 +438,7 @@ namespace MyDiabeticSystem.Web.Migrations
 
             modelBuilder.Entity("MyDiabeticSystem.Web.Data.Entities.Patient", b =>
                 {
-                    b.HasOne("MyDiabeticSystem.Web.Data.Entities.Doctor", "Doctor")
+                    b.HasOne("MyDiabeticSystem.Web.Data.Entities.Doctor")
                         .WithMany("Patients")
                         .HasForeignKey("DoctorId");
 

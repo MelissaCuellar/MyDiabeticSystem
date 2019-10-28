@@ -25,7 +25,6 @@ namespace MyDiabeticSystem.Web.Controllers
             _dataContext = dataContext;
             _userHelper = userHelper;
         }
-
         
 
         // GET: Doctors
@@ -97,7 +96,7 @@ namespace MyDiabeticSystem.Web.Controllers
                 FirstName = view.FirstName,
                 LastName = view.LastName,
                 PhoneNumber = view.PhoneNumber,
-                UserName = view.Username
+                UserName = view.Username,
             };
 
             var result = await _userHelper.AddUserAsync(user, view.Password);

@@ -11,20 +11,8 @@ namespace MyDiabeticSystem.Web.Data.Entities
         public int Id { get; set; }
         
         public User User { get; set; }
-
-        [Display(Name = "Date of birth")]
-        [Required(ErrorMessage = "The field {0} is mandatory.")]
-        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}", ApplyFormatInEditMode = true)]
-        public DateTime DateBirth { get; set; }
-
-        [Display(Name = "Can edit?")]
-        public bool CanEdit { get; set; } 
-
-        [Display(Name = "Date of birth")]
-        [Required(ErrorMessage = "The field {0} is mandatory.")]
-        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}", ApplyFormatInEditMode = true)]
-        public DateTime DateBirthLocal => DateBirth.ToLocalTime();
-      
+     
+        public Doctor Doctor { get; set; }
 
     }
 }
