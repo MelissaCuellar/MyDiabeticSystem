@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -13,6 +14,7 @@ using MyDiabeticSystem.Web.Models;
 
 namespace MyDiabeticSystem.Web.Controllers
 {
+    [Authorize(Roles ="Manager")]
     public class DoctorsController : Controller
     {
         private readonly DataContext _dataContext;
@@ -118,12 +120,23 @@ namespace MyDiabeticSystem.Web.Controllers
                 return NotFound();
             }
 
-            var doctor = await _dataContext.Doctors.FindAsync(id);
+            var doctor = await _dataContext.Doctors
+                .Include(o => o.User)
+                .FirstOrDefaultAsync(o => o.Id == id.Value);
             if (doctor == null)
             {
                 return NotFound();
             }
-            return View(doctor);
+
+            var model = new EditUserViewModel
+            {
+                Document = doctor.User.Document,
+                FirstName = doctor.User.FirstName,
+                LastName = doctor.User.LastName,
+                Id = doctor.Id,
+                PhoneNumber = doctor.User.PhoneNumber,
+            };
+            return View(model);
         }
 
         // POST: Doctors/Edit/5
@@ -131,34 +144,23 @@ namespace MyDiabeticSystem.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id")] Doctor doctor)
-        {
-            if (id != doctor.Id)
-            {
-                return NotFound();
-            }
-
+        public async Task<IActionResult> Edit(EditUserViewModel model)
+        {            
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _dataContext.Update(doctor);
-                    await _dataContext.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!DoctorExists(doctor.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                var doctor = await _dataContext.Doctors
+                    .Include(o => o.User)
+                    .FirstOrDefaultAsync(o => o.Id == model.Id);
+
+                doctor.User.Document = model.Document;
+                doctor.User.FirstName = model.FirstName;
+                doctor.User.LastName = model.LastName;
+                doctor.User.PhoneNumber = model.PhoneNumber;
+
+                await _userHelper.UpdateUserAsync(doctor.User);
                 return RedirectToAction(nameof(Index));
             }
-            return View(doctor);
+            return View(model);
         }
 
         // GET: Doctors/Delete/5

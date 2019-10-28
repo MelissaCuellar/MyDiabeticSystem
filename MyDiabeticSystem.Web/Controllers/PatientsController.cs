@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -13,6 +14,7 @@ using MyDiabeticSystem.Web.Models;
 
 namespace MyDiabeticSystem.Web.Controllers
 {
+    [Authorize(Roles = "Doctor")]
     public class PatientsController : Controller
     {
         private readonly DataContext _dataContext;
@@ -29,10 +31,10 @@ namespace MyDiabeticSystem.Web.Controllers
         }
 
         // GET: Patients
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View( _dataContext.Patients
-                .Include(o => o.User));
+            var model = await _userHelper.GetPatienssAsync(this.User.Identity.Name);
+            return View(model);
         }
 
         // GET: Patients/Details/5

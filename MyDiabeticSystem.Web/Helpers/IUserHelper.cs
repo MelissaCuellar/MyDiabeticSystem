@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using MyDiabeticSystem.Web.Data.Entities;
 using MyDiabeticSystem.Web.Models;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace MyDiabeticSystem.Web.Helpers
@@ -25,6 +26,8 @@ namespace MyDiabeticSystem.Web.Helpers
 
         Task LogoutAsync();
 
+        Task<IdentityResult> UpdateUserAsync(User user);
 
+        Task<IQueryable<Patient>> GetPatienssAsync(string userName);
     }
 }

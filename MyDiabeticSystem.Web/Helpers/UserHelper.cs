@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using MyDiabeticSystem.Web.Data;
 using MyDiabeticSystem.Web.Data.Entities;
 using MyDiabeticSystem.Web.Models;
 using System;
@@ -13,13 +15,16 @@ namespace MyDiabeticSystem.Web.Helpers
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly DataContext _dataContext;
 
         public UserHelper(
             UserManager<User> userManager,
             RoleManager<IdentityRole> roleManager,
-            SignInManager<User> signInManager)
+            SignInManager<User> signInManager,
+            DataContext dataContext)
 
         {
+            _dataContext = dataContext;
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
@@ -57,6 +62,27 @@ namespace MyDiabeticSystem.Web.Helpers
             return await _userManager.GenerateEmailConfirmationTokenAsync(user);
         }
 
+        public async Task<IQueryable<Patient>> GetPatienssAsync(string userName)
+        {
+            var user = await GetUserByEmailAsync(userName);
+            if (user==null)
+            {
+                return null;
+            }
+            /*if(await IsUserInRoleAsync(user, "Manager"))
+            {
+                return this._dataContext.Patients
+                .Include(o => o.User);
+            }*/
+            
+            
+                return this._dataContext.Patients
+                .Include(o => o.User)
+                .Include(o => o.Doctor)
+                .Where(o => o.Doctor.User == user);
+            
+        }
+
         public async Task<User> GetUserByEmailAsync(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
@@ -80,6 +106,11 @@ namespace MyDiabeticSystem.Web.Helpers
         public async Task LogoutAsync()
         {
             await _signInManager.SignOutAsync();
+        }
+
+        public async Task<IdentityResult> UpdateUserAsync(User user)
+        {
+            return await _userManager.UpdateAsync(user);
         }
     }
 }

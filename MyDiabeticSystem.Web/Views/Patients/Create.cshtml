@@ -49,9 +49,15 @@
                 <span asp-validation-for="FathersEmail" class="text-danger"></span>
             </div>
 
+
             <div class="form-group">
                 <label asp-for="DateBirth" class="control-label"></label>
-                <input asp-for="DateBirth" class="form-control" />
+                <div class="input-group date" data-provide="datepicker">
+                    <input asp-for="DateBirth" class="form-control" />
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
                 <span asp-validation-for="DateBirth" class="text-danger"></span>
             </div>
 
