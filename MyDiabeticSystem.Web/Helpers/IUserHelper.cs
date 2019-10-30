@@ -29,5 +29,7 @@ namespace MyDiabeticSystem.Web.Helpers
         Task<IdentityResult> UpdateUserAsync(User user);
 
         Task<IQueryable<Patient>> GetPatienssAsync(string userName);
+
+        Task<IQueryable<Ratio>> GetRatiossAsync(string userName);
     }
 }

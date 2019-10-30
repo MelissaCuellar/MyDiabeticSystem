@@ -148,11 +148,15 @@ namespace MyDiabeticSystem.Web.Controllers
                 return NotFound();
             }
 
-            var patient = await _dataContext.Patients.FindAsync(id);
+            var patient = await _dataContext.Patients
+                .Include(o => o.User)
+                .Include(o => o.Doctor)
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (patient == null)
             {
                 return NotFound();
             }
+
             return View(patient);
         }
 

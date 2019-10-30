@@ -69,11 +69,6 @@ namespace MyDiabeticSystem.Web.Helpers
             {
                 return null;
             }
-            /*if(await IsUserInRoleAsync(user, "Manager"))
-            {
-                return this._dataContext.Patients
-                .Include(o => o.User);
-            }*/
             
             
                 return this._dataContext.Patients
@@ -81,6 +76,20 @@ namespace MyDiabeticSystem.Web.Helpers
                 .Include(o => o.Doctor)
                 .Where(o => o.Doctor.User == user);
             
+        }
+
+        public async Task<IQueryable<Ratio>> GetRatiossAsync(string userName)
+        {
+            var user = await GetUserByEmailAsync(userName);
+            if (user == null)
+            {
+                return null;
+            }
+            return this._dataContext.Ratios
+                .Include(o => o.Patient)
+                .Where(o => o.Patient.User == user);
+
+                
         }
 
         public async Task<User> GetUserByEmailAsync(string email)

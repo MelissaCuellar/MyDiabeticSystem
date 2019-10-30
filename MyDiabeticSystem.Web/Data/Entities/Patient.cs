@@ -14,5 +14,7 @@ namespace MyDiabeticSystem.Web.Data.Entities
      
         public Doctor Doctor { get; set; }
 
+        public ICollection<Ratio> Ratios { get; set; }
+
     }
 }
