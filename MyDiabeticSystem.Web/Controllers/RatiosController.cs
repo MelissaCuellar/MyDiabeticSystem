@@ -65,7 +65,7 @@ namespace MyDiabeticSystem.Web.Controllers
             {
                 PatientId = patient.Id
             };
-           
+
             return View(model);
         }
 
@@ -76,7 +76,7 @@ namespace MyDiabeticSystem.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(RatioViewModel view)
         {
-            
+
             if (ModelState.IsValid)
             {
 
@@ -100,7 +100,7 @@ namespace MyDiabeticSystem.Web.Controllers
             .Include(o => o.User)
             .Where(o => o.User.Id.Equals(id))
             .FirstOrDefaultAsync();
-                
+
         }
 
         // GET: Ratios/Edit/5

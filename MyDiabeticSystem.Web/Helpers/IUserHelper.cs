@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using MyDiabeticSystem.Web.Data.Entities;
 using MyDiabeticSystem.Web.Models;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -31,5 +33,11 @@ namespace MyDiabeticSystem.Web.Helpers
         Task<IQueryable<Patient>> GetPatienssAsync(string userName);
 
         Task<IQueryable<Ratio>> GetRatiossAsync(string userName);
+
+        IEnumerable<SelectListItem> GetComboRoles();
+
+        Task<User> AddUser(AddUserViewModel view, string role);
+
+
     }
 }

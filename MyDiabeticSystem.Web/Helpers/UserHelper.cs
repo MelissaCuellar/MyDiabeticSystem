@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MyDiabeticSystem.Web.Data;
 using MyDiabeticSystem.Web.Data.Entities;
@@ -28,6 +29,28 @@ namespace MyDiabeticSystem.Web.Helpers
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
+        }
+
+        public async Task<User> AddUser(AddUserViewModel view, string role)
+        {
+            var user = new User
+            {
+                Document = view.Document,
+                Email = view.Username,
+                FirstName = view.FirstName,
+                LastName = view.LastName,
+                PhoneNumber = view.PhoneNumber,
+                UserName = view.Username,
+            };
+            var result = await AddUserAsync(user, view.Password);
+            if (result != IdentityResult.Success)
+            {
+                return null;
+            }
+
+            var newUser = await GetUserByEmailAsync(view.Username);
+            await AddUserToRoleAsync(newUser, role);
+            return newUser;
         }
 
         public async Task<IdentityResult> AddUserAsync(User user, string password)
@@ -60,6 +83,18 @@ namespace MyDiabeticSystem.Web.Helpers
         public async Task<string> GenerateEmailConfirmationTokenAsync(User user)
         {
             return await _userManager.GenerateEmailConfirmationTokenAsync(user);
+        }
+
+        public IEnumerable<SelectListItem> GetComboRoles()
+        {
+            var list = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "0", Text = "(Select a role...)" },
+                new SelectListItem { Value = "1", Text = "Doctor" },
+                new SelectListItem { Value = "2", Text = "Patient" }
+            };
+
+            return list;
         }
 
         public async Task<IQueryable<Patient>> GetPatienssAsync(string userName)

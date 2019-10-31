@@ -45,7 +45,15 @@
                 <ul class="nav navbar-nav navbar-right">
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <li><a asp-area="" asp-controller="Account" asp-action="ChangeUser">@User.Identity.Name</a></li>
+                        @if (User.IsInRole("Patient"))
+                        {
+                            <li><a asp-area="" asp-controller="Account" asp-action="ChangeUserPatient">@User.Identity.Name</a></li>
+                        }
+                        else
+                        {
+                            <li><a asp-area="" asp-controller="Account" asp-action="ChangeUserDoctor">@User.Identity.Name</a></li>
+                        }
+                        
                         <li><a asp-area="" asp-controller="Account" asp-action="Logout">Logout</a></li>
                     }
                     else
@@ -63,7 +71,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; 2019 - MyDiabeticSystem.Web</p>
+            <p>&copy; 2019 - MyDiabeticSystem</p>
         </footer>
     </div>
 
