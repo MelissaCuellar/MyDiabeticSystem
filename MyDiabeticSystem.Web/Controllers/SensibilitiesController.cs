@@ -2,37 +2,39 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MyDiabeticSystem.Web.Data;
 using MyDiabeticSystem.Web.Data.Entities;
 using MyDiabeticSystem.Web.Helpers;
+using MyDiabeticSystem.Web.Models;
 
 namespace MyDiabeticSystem.Web.Controllers
 {
-    public class ChecksController : Controller
+    [Authorize(Roles = "Patient")]
+    public class SensibilitiesController : Controller
     {
         private readonly DataContext _dataContext;
         private readonly IUserHelper _userHelper;
 
-        public ChecksController(
-            DataContext dataContext,
+        public SensibilitiesController(
+            DataContext context,
             IUserHelper userHelper)
         {
-            _dataContext = dataContext;
+            _dataContext = context;
             _userHelper = userHelper;
         }
 
-        // GET: Checks
+        // GET: Sensibilities
         public async Task<IActionResult> Index()
         {
-            var model = await _userHelper.GetCheckssAsync(this.User.Identity.Name);
-
+            var model = await _userHelper.GetSencibilitiessAsync(this.User.Identity.Name);
             return View(model);
         }
 
-        // GET: Checks/Details/5
+        // GET: Sensibilities/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -40,39 +42,65 @@ namespace MyDiabeticSystem.Web.Controllers
                 return NotFound();
             }
 
-            var check = await _dataContext.Checks
+            var sensibility = await _dataContext.Sensibilities
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (check == null)
+            if (sensibility == null)
             {
                 return NotFound();
             }
 
-            return View(check);
+            return View(sensibility);
         }
 
-        // GET: Checks/Create
-        public IActionResult Create()
+        // GET: Sensibilities/Create
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+
+            var patient = await this.GetPatientAsync(user.Id);
+
+            var model = new AddSensibilityViewModel
+            {
+                PatientId = patient.Id
+            };
+
+            return View(model);
         }
 
-        // POST: Checks/Create
+        // POST: Sensibilities/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Carbohydrates,Glucometry,Date,Bolus,Hb1")] Check check)
+        public async Task<IActionResult> Create(AddSensibilityViewModel view)
         {
             if (ModelState.IsValid)
             {
-                _dataContext.Add(check);
+
+                var sensibility = new Sensibility
+                {
+                    StartTime = view.StartTime,
+                    EndTime = view.EndTime,
+                    Value = view.Value,
+                    Patient = await _dataContext.Patients.FindAsync(view.PatientId),
+                };
+                _dataContext.Sensibilities.Add(sensibility);
                 await _dataContext.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(check);
+            return View(view);
         }
 
-        // GET: Checks/Edit/5
+        public async Task<Patient> GetPatientAsync(string id)
+        {
+            return await _dataContext.Patients
+            .Include(o => o.User)
+            .Where(o => o.User.Id.Equals(id))
+            .FirstOrDefaultAsync();
+
+        }
+
+        // GET: Sensibilities/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -80,22 +108,22 @@ namespace MyDiabeticSystem.Web.Controllers
                 return NotFound();
             }
 
-            var check = await _dataContext.Checks.FindAsync(id);
-            if (check == null)
+            var sensibility = await _dataContext.Sensibilities.FindAsync(id);
+            if (sensibility == null)
             {
                 return NotFound();
             }
-            return View(check);
+            return View(sensibility);
         }
 
-        // POST: Checks/Edit/5
+        // POST: Sensibilities/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Carbohydrates,Glucometry,Date,Bolus,Hb1")] Check check)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,StartTime,EndTime,Value")] Sensibility sensibility)
         {
-            if (id != check.Id)
+            if (id != sensibility.Id)
             {
                 return NotFound();
             }
@@ -104,12 +132,12 @@ namespace MyDiabeticSystem.Web.Controllers
             {
                 try
                 {
-                    _dataContext.Update(check);
+                    _dataContext.Update(sensibility);
                     await _dataContext.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CheckExists(check.Id))
+                    if (!SensibilityExists(sensibility.Id))
                     {
                         return NotFound();
                     }
@@ -120,10 +148,10 @@ namespace MyDiabeticSystem.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(check);
+            return View(sensibility);
         }
 
-        // GET: Checks/Delete/5
+        // GET: Sensibilities/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -131,30 +159,30 @@ namespace MyDiabeticSystem.Web.Controllers
                 return NotFound();
             }
 
-            var check = await _dataContext.Checks
+            var sensibility = await _dataContext.Sensibilities
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (check == null)
+            if (sensibility == null)
             {
                 return NotFound();
             }
 
-            return View(check);
+            return View(sensibility);
         }
 
-        // POST: Checks/Delete/5
+        // POST: Sensibilities/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var check = await _dataContext.Checks.FindAsync(id);
-            _dataContext.Checks.Remove(check);
+            var sensibility = await _dataContext.Sensibilities.FindAsync(id);
+            _dataContext.Sensibilities.Remove(sensibility);
             await _dataContext.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CheckExists(int id)
+        private bool SensibilityExists(int id)
         {
-            return _dataContext.Checks.Any(e => e.Id == id);
+            return _dataContext.Sensibilities.Any(e => e.Id == id);
         }
     }
 }

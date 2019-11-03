@@ -34,6 +34,7 @@ namespace MyDiabeticSystem.Web.Controllers
         public async Task<IActionResult> Index()
         {
             var model = await _userHelper.GetPatienssAsync(this.User.Identity.Name);
+                       
             return View(model);
         }
 

@@ -85,6 +85,18 @@ namespace MyDiabeticSystem.Web.Helpers
             return await _userManager.GenerateEmailConfirmationTokenAsync(user);
         }
 
+        public async Task<IQueryable<Check>> GetCheckssAsync(string userName)
+        {
+            var user = await GetUserByEmailAsync(userName);
+            if (user == null)
+            {
+                return null;
+            }
+            return this._dataContext.Checks
+                .Include(o => o.Patient)
+                .Where(o => o.Patient.User == user);
+        }
+
         public IEnumerable<SelectListItem> GetComboRoles()
         {
             var list = new List<SelectListItem>
@@ -104,8 +116,7 @@ namespace MyDiabeticSystem.Web.Helpers
             {
                 return null;
             }
-            
-            
+                        
                 return this._dataContext.Patients
                 .Include(o => o.User)
                 .Include(o => o.Doctor)
@@ -125,6 +136,18 @@ namespace MyDiabeticSystem.Web.Helpers
                 .Where(o => o.Patient.User == user);
 
                 
+        }
+
+        public async Task<IQueryable<Sensibility>> GetSencibilitiessAsync(string userName)
+        {
+            var user = await GetUserByEmailAsync(userName);
+            if (user == null)
+            {
+                return null;
+            }
+            return this._dataContext.Sensibilities
+                .Include(o => o.Patient)
+                .Where(o => o.Patient.User == user);
         }
 
         public async Task<User> GetUserByEmailAsync(string email)

@@ -16,5 +16,7 @@ namespace MyDiabeticSystem.Web.Data.Entities
 
         public ICollection<Ratio> Ratios { get; set; }
 
+        public ICollection<Sensibility> Sensibilities { get; set; }
+
     }
 }

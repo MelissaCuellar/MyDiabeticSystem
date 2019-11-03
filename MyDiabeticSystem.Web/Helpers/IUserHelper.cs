@@ -34,6 +34,10 @@ namespace MyDiabeticSystem.Web.Helpers
 
         Task<IQueryable<Ratio>> GetRatiossAsync(string userName);
 
+        Task<IQueryable<Sensibility>> GetSencibilitiessAsync(string userName);
+
+        Task<IQueryable<Check>> GetCheckssAsync(string userName);
+
         IEnumerable<SelectListItem> GetComboRoles();
 
         Task<User> AddUser(AddUserViewModel view, string role);
