@@ -1,0 +1,60 @@
+﻿@model IEnumerable<MyDiabeticSystem.Web.Data.Entities.Sensibility>
+
+@{
+    ViewData["Title"] = "DetailSensibility";
+}
+
+<h2>Sensibilities</h2>
+
+<p>
+    @foreach (var i in Model)
+    {
+        var idPatient = @i.Patient.Id;
+        if (idPatient != 0)
+        {
+            <a asp-action="CreateSensibility" asp-route-id="@i.Patient.Id" class="btn btn-primary">Add Sensibility</a>
+            <a asp-action="Details" asp-route-id="@i.Patient.Id" class="btn btn-info">Back to patient</a>
+            break;
+        }
+    }
+
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.StartTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EndTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Value)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EndTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Value)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+

@@ -34,7 +34,11 @@ namespace MyDiabeticSystem.Web.Helpers
 
         Task<IQueryable<Ratio>> GetRatiossAsync(string userName);
 
+        Task<IQueryable<Ratio>> GetRatiossAsync(int? id);
+
         Task<IQueryable<Sensibility>> GetSencibilitiessAsync(string userName);
+
+        Task<IQueryable<Sensibility>> GetSencibilitiessAsync(int? id);
 
         Task<IQueryable<Check>> GetCheckssAsync(string userName);
 

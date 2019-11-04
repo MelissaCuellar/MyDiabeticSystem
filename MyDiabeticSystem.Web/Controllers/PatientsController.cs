@@ -38,6 +38,75 @@ namespace MyDiabeticSystem.Web.Controllers
             return View(model);
         }
 
+        public async Task<IActionResult> CreateSensibility(int id)
+        {
+           
+            var model = new AddSensibilityViewModel
+            {
+                PatientId = id
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateSensibility(AddSensibilityViewModel view)
+        {
+            if (ModelState.IsValid)
+            {
+                int idP = view.PatientId;
+
+                var sensibility = new Sensibility
+                {
+                    StartTime = view.StartTime,
+                    EndTime = view.EndTime,
+                    Value = view.Value,
+                    Patient = await _dataContext.Patients.FindAsync(view.PatientId),
+                };
+                _dataContext.Sensibilities.Add(sensibility);
+                await _dataContext.SaveChangesAsync();
+                return RedirectToAction("DetailSensibility/"+idP);
+            }
+            return View(view);
+        }
+
+
+
+        public async Task<IActionResult> CreateRatio(int id)
+        {
+
+            var model = new RatioViewModel
+            {
+                PatientId = id
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateRatio(RatioViewModel view)
+        {
+            if (ModelState.IsValid)
+            {
+                int idP = view.PatientId;
+
+                var ratio = new Ratio
+                {
+                    StartTime = view.StartTime,
+                    EndTime = view.EndTime,
+                    Value = view.Value,
+                    Patient = await _dataContext.Patients.FindAsync(view.PatientId),
+                };
+                _dataContext.Ratios.Add(ratio);
+                await _dataContext.SaveChangesAsync();
+                return RedirectToAction("DetailRatio/" + idP);
+            }
+            return View(view);
+        }
+
+
         // GET: Patients/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -56,6 +125,46 @@ namespace MyDiabeticSystem.Web.Controllers
             }
 
             return View(patient);
+        }
+
+
+        public async Task<IActionResult> DetailRatio(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var cont = _dataContext.Ratios
+                .Include(o => o.Patient)
+                .Where(o => o.Patient.Id == id)
+                .Count();
+            if (cont==0)
+            {
+                return RedirectToAction("CreateRatio/" + id);
+            }
+            var model = await _userHelper.GetRatiossAsync(id);            
+            
+            return View(model);
+        }
+
+
+        public async Task<IActionResult> DetailSensibility(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var cont = _dataContext.Sensibilities
+               .Include(o => o.Patient)
+               .Where(o => o.Patient.Id == id)
+               .Count();
+            if (cont == 0)
+            {
+                return RedirectToAction("CreateSensibility/" + id);
+            }
+            var model = await _userHelper.GetSencibilitiessAsync(id);
+
+            return View(model);
         }
 
         // GET: Patients/Create
@@ -85,6 +194,8 @@ namespace MyDiabeticSystem.Web.Controllers
 
             return list;
         }
+
+        
 
         // POST: Patients/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 

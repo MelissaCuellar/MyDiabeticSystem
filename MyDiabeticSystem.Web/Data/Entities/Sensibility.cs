@@ -12,12 +12,12 @@ namespace MyDiabeticSystem.Web.Data.Entities
 
         [Display(Name = "Start Time")]
         [Required(ErrorMessage = "The field {0} is mandatory")]
-        [DisplayFormat(DataFormatString = "{0:1900/01/01 HH:mm}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:HH:mm}", ApplyFormatInEditMode = true)]
         public DateTime StartTime { get; set; }
 
         [Display(Name = "End Time")]
         [Required(ErrorMessage = "The field {0} is mandatory")]
-        [DisplayFormat(DataFormatString = "{0:1900/01/01 HH:mm}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:HH:mm}", ApplyFormatInEditMode = true)]
         public DateTime EndTime { get; set; }
 
         [Required(ErrorMessage = "The field {0} is mandatory.")]
@@ -25,12 +25,12 @@ namespace MyDiabeticSystem.Web.Data.Entities
 
         [Display(Name = "Start Time")]
         [Required(ErrorMessage = "The field {0} is mandatory.")]
-        [DisplayFormat(DataFormatString = "{0:1900/01/01 HH:mm}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:HH:mm}", ApplyFormatInEditMode = true)]
         public DateTime StartTimeLocal => StartTime.ToLocalTime();
 
         [Display(Name = "End Time")]
         [Required(ErrorMessage = "The field {0} is mandatory.")]
-        [DisplayFormat(DataFormatString = "{0:1900/01/01 HH:mm}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:HH:mm}", ApplyFormatInEditMode = true)]
         public DateTime EndTimeLocal => EndTime.ToLocalTime();
 
         public Patient Patient { get; set; }

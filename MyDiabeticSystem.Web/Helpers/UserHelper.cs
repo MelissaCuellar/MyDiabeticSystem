@@ -133,9 +133,18 @@ namespace MyDiabeticSystem.Web.Helpers
             }
             return this._dataContext.Ratios
                 .Include(o => o.Patient)
-                .Where(o => o.Patient.User == user);
+                .Where(o => o.Patient.User == user);                
+        }
 
-                
+        public async Task<IQueryable<Ratio>> GetRatiossAsync(int? id)
+        {            
+            if (id == 0)
+            {
+                return null;
+            }
+            return this._dataContext.Ratios
+                .Include(o => o.Patient)
+                .Where(o => o.Patient.Id == id);
         }
 
         public async Task<IQueryable<Sensibility>> GetSencibilitiessAsync(string userName)
@@ -148,6 +157,17 @@ namespace MyDiabeticSystem.Web.Helpers
             return this._dataContext.Sensibilities
                 .Include(o => o.Patient)
                 .Where(o => o.Patient.User == user);
+        }
+
+        public async Task<IQueryable<Sensibility>> GetSencibilitiessAsync(int? id)
+        {
+            if (id == 0)
+            {
+                return null;
+            }
+            return _dataContext.Sensibilities
+                .Include(o => o.Patient)
+                .Where(o => o.Patient.Id == id);
         }
 
         public async Task<User> GetUserByEmailAsync(string email)
