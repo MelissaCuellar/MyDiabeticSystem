@@ -22,8 +22,8 @@ namespace MyDiabeticSystem.Web.Data
         {
             await _context.Database.EnsureCreatedAsync();
             await CheckRoles();
-            var manager = await CheckUserAsync("1146437549", "Melissa", "Cuellar", "meli.cuellar0117@gmail.com", DateTime.Parse("01/17/1994"),"301 474 7485", "Manager");
-            var doctor = await CheckUserAsync("1146437549", "Melissa", "Cuellar", "melissacuellar208847@correo.itm.edu.co", DateTime.Parse("01/17/1994"), "301 474 7485", "Doctor");
+            var manager = await CheckUserAsync("1146437549", "Melissa", "Cuellar", "meli0117@gmail.com", DateTime.Parse("01/17/1994"),"301 474 7485", "Manager",true,1);
+            var doctor = await CheckUserAsync("1146437549", "Melissa", "Cuellar", "melissacuellar208847@correo.itm.edu.co", DateTime.Parse("01/17/1994"), "301 474 7485", "Doctor", true,1);
             
             await CheckDoctorsAsync(doctor);
             
@@ -63,7 +63,9 @@ namespace MyDiabeticSystem.Web.Data
             string email,
             DateTime dateBirth,
             string phone,
-            string role)
+            string role,
+            bool canEdit,
+            double objetive)
         {
             var user = await _userHelper.GetUserByEmailAsync(email);
             if (user == null)
@@ -77,7 +79,8 @@ namespace MyDiabeticSystem.Web.Data
                     PhoneNumber = phone,
                     Document = document,
                     DateBirth = dateBirth,
-
+                    CanEdit=canEdit,
+                    Objective=objetive,
                 };
 
                 await _userHelper.AddUserAsync(user, "123456");

@@ -18,9 +18,8 @@ namespace MyDiabeticSystem.Web.Data.Entities
 
         public ICollection<Sensibility> Sensibilities { get; set; }
 
-        public static implicit operator int(Patient v)
-        {
-            throw new NotImplementedException();
-        }
+        public ICollection<Parameter> Parameters { get; set; }
+
+        public ICollection<Check> Checks { get; set; }
     }
 }

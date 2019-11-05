@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyDiabeticSystem.Web.Data;
 
 namespace MyDiabeticSystem.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20191105024103_fixCheck")]
+    partial class fixCheck
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -135,15 +137,11 @@ namespace MyDiabeticSystem.Web.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<double>("Bolus");
-
                     b.Property<double>("Carbohydrates");
 
                     b.Property<DateTime>("Date");
 
                     b.Property<double>("Glucometry");
-
-                    b.Property<double>("Hb1");
 
                     b.Property<int?>("PatientId");
 
@@ -336,8 +334,6 @@ namespace MyDiabeticSystem.Web.Migrations
 
                     b.Property<string>("NormalizedUserName")
                         .HasMaxLength(256);
-
-                    b.Property<double>("Objective");
 
                     b.Property<string>("PasswordHash");
 

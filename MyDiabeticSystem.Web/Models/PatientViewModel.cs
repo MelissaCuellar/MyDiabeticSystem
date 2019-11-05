@@ -7,9 +7,15 @@ using System.Threading.Tasks;
 
 namespace MyDiabeticSystem.Web.Models
 {
-    public class EditPatientViewModel
+    public class PatientViewModel
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
+
+        [Display(Name = "Email")]
+        [Required(ErrorMessage = "The field {0} is mandatory.")]
+        [MaxLength(100, ErrorMessage = "The {0} field can not have more than {1} characters.")]
+        [EmailAddress]
+        public string Username { get; set; }
 
         [Display(Name = "Document")]
         [MaxLength(20, ErrorMessage = "The {0} field can not have more than {1} characters.")]
@@ -40,19 +46,12 @@ namespace MyDiabeticSystem.Web.Models
         [EmailAddress]
         public string FathersEmail { get; set; }
 
-        [Required(ErrorMessage = "The field {0} is mandatory.")]
-        [Display(Name = "Doctor")]
-        [Range(1, int.MaxValue, ErrorMessage = "You must select a doctor.")]
-        public int DoctorId { get; set; }
-
-        [Display(Name = "Objective")]
-        [Required(ErrorMessage = "The field {0} is mandatory.")]
-        public double Objective { get; set; }
+        
 
         [Display(Name = "Can edit?")]
         public bool CanEdit { get; set; }
 
-        public IEnumerable<SelectListItem> Doctors { get; set; }
+     
 
         [Display(Name = "Date of birth")]
         [Required(ErrorMessage = "The field {0} is mandatory.")]

@@ -23,7 +23,6 @@ namespace MyDiabeticSystem.Web.Models
 
         [Required(ErrorMessage = "The field {0} is mandatory.")]
         [Display(Name = "Patient")]
-        [Range(1, int.MaxValue, ErrorMessage = "You must select a doctor.")]
         public int PatientId { get; set; }
 
         [Display(Name = "Start Time")]

@@ -31,7 +31,7 @@ namespace MyDiabeticSystem.Web.Helpers
             _signInManager = signInManager;
         }
 
-        public async Task<User> AddUser(AddUserViewModel view, string role)
+        public async Task<User> AddUser(AddUserViewModel view, string role, bool canEdit)
         {
             var user = new User
             {
@@ -41,6 +41,8 @@ namespace MyDiabeticSystem.Web.Helpers
                 LastName = view.LastName,
                 PhoneNumber = view.PhoneNumber,
                 UserName = view.Username,
+                CanEdit= canEdit,
+                Objective=1,
             };
             var result = await AddUserAsync(user, view.Password);
             if (result != IdentityResult.Success)
@@ -107,6 +109,17 @@ namespace MyDiabeticSystem.Web.Helpers
             };
 
             return list;
+        }
+
+        public async Task<IQueryable<Parameter>> GetParameterssAsync(int? id)
+        {
+            if (id == 0)
+            {
+                return null;
+            }
+            return _dataContext.Parameters
+                .Include(o => o.Patient)
+                .Where(o => o.Patient.Id == id);
         }
 
         public async Task<IQueryable<Patient>> GetPatienssAsync(string userName)
@@ -194,6 +207,7 @@ namespace MyDiabeticSystem.Web.Helpers
         {
             await _signInManager.SignOutAsync();
         }
+
 
         public async Task<IdentityResult> UpdateUserAsync(User user)
         {

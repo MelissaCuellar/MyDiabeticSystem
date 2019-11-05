@@ -40,12 +40,14 @@ namespace MyDiabeticSystem.Web.Helpers
 
         Task<IQueryable<Sensibility>> GetSencibilitiessAsync(int? id);
 
+        Task<IQueryable<Parameter>> GetParameterssAsync(int? id);
+
         Task<IQueryable<Check>> GetCheckssAsync(string userName);
 
         IEnumerable<SelectListItem> GetComboRoles();
 
-        Task<User> AddUser(AddUserViewModel view, string role);
+        Task<User> AddUser(AddUserViewModel view, string role, bool canEdit);
 
-
+       
     }
 }

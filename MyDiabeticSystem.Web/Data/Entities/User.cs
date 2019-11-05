@@ -33,8 +33,12 @@ namespace MyDiabeticSystem.Web.Data.Entities
         [EmailAddress]
         public string FathersEmail { get; set; }
 
+        [Display(Name = "Objective")]
+        [Required(ErrorMessage = "The field {0} is mandatory.")]
+        public double Objective { get; set; }
+
         [Display(Name = "Can edit?")]
-        public bool ? CanEdit { get; set; }
+        public bool CanEdit { get; set; }
 
         [Display(Name = "Full Name")]
         public string FullName => $"{FirstName} {LastName}";

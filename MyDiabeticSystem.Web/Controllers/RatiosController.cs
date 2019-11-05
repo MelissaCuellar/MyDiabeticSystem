@@ -33,6 +33,7 @@ namespace MyDiabeticSystem.Web.Controllers
         public async Task<IActionResult> Index()
         {
             var model = await _userHelper.GetRatiossAsync(this.User.Identity.Name);
+
             return View(model);
         }
 

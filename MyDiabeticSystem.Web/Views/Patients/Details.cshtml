@@ -7,6 +7,7 @@
 <h2>Patient</h2>
 
 <div>
+
     <h4>Details</h4>
     <hr />
     <dl class="dl-horizontal">
@@ -52,10 +53,16 @@
         <dd>
             @Html.DisplayFor(model => model.User.DateBirth)
         </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.User.CanEdit)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.User.CanEdit)
+        </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+    <a asp-action="ChangeUserPatient" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
     <a asp-action="DetailRatio" asp-route-id="@Model.Id" class="btn btn-primary">Ratios</a>
     <a asp-action="DetailSensibility" asp-route-id="@Model.Id" class="btn btn-primary">Sensibilities</a>
     <a asp-action="DetailParameter" asp-route-id="@Model.Id" class="btn btn-primary">Parameters</a>

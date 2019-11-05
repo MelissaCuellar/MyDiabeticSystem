@@ -38,6 +38,40 @@ namespace MyDiabeticSystem.Web.Controllers
             return View(model);
         }
 
+        public async Task<IActionResult> CreateParameter(int id)
+        {
+
+            var model = new AddParameterViewModel
+            {
+                PatientId = id
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateParameter(AddParameterViewModel view)
+        {
+            if (ModelState.IsValid)
+            {
+                int idP = view.PatientId;
+
+                var parameter = new Parameter
+                {
+                    Description= view.Description,
+                    StartTime = view.StartTime,
+                    EndTime = view.EndTime,
+                    Value = view.Value,
+                    Patient = await _dataContext.Patients.FindAsync(view.PatientId),
+                };
+                _dataContext.Parameters.Add(parameter);
+                await _dataContext.SaveChangesAsync();
+                return RedirectToAction("DetailParameter/" + idP);
+            }
+            return View(view);
+        }
+
         public async Task<IActionResult> CreateSensibility(int id)
         {
            
@@ -70,8 +104,6 @@ namespace MyDiabeticSystem.Web.Controllers
             }
             return View(view);
         }
-
-
 
         public async Task<IActionResult> CreateRatio(int id)
         {
@@ -147,6 +179,24 @@ namespace MyDiabeticSystem.Web.Controllers
             return View(model);
         }
 
+        public async Task<IActionResult> DetailParameter(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var cont = _dataContext.Parameters
+                .Include(o => o.Patient)
+                .Where(o => o.Patient.Id == id)
+                .Count();
+            if (cont == 0)
+            {
+                return RedirectToAction("CreateParameter/" + id);
+            }
+            var model = await _userHelper.GetParameterssAsync(id);
+
+            return View(model);
+        }
 
         public async Task<IActionResult> DetailSensibility(int? id)
         {
@@ -252,6 +302,75 @@ namespace MyDiabeticSystem.Web.Controllers
 
         }
 
+        public async Task<IActionResult> ChangeUserPatient(int id)
+        {           
+            var patient = await this.GetPatientAsync(id);
+
+            var model = new EditPatientViewModel();
+
+            if (patient != null)
+            {
+                model.Document = patient.User.Document;
+                model.FirstName = patient.User.FirstName;
+                model.LastName = patient.User.LastName;
+                model.Id = patient.Id;
+                model.PhoneNumber = patient.User.PhoneNumber;
+                model.FathersEmail = patient.User.FathersEmail;
+                model.DateBirth = patient.User.DateBirth;
+                model.CanEdit = patient.User.CanEdit;
+
+                if (patient.Doctor == null)
+                {
+                    model.Doctors = GetComboDoctors();
+                }
+                else
+                {
+                    model.Doctors = GetComboDoctors();
+                    model.DoctorId = patient.Doctor.Id;
+                }
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangeUserPatient(EditPatientViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var patient = await _dataContext.Patients
+                    .Include(o => o.User)
+                    .FirstOrDefaultAsync(o => o.Id == model.Id);
+
+                patient.User.Document = model.Document;
+                patient.User.FirstName = model.FirstName;
+                patient.User.LastName = model.LastName;
+                patient.User.PhoneNumber = model.PhoneNumber;
+                patient.User.FathersEmail = model.FathersEmail;
+                patient.User.DateBirth = model.DateBirth;
+                patient.Doctor = await _dataContext.Doctors.FindAsync(model.DoctorId);
+                patient.User.CanEdit = model.CanEdit;
+
+                var id = patient.Id;
+
+                await _userHelper.UpdateUserAsync(patient.User);
+                return RedirectToAction("Details/" + id);
+
+                
+
+            }
+            return View(model);
+        }
+        public async Task<Patient> GetPatientAsync(int id)
+        {
+            return await _dataContext.Patients
+            .Include(o => o.User)
+            .Include(o => o.Doctor)
+            .Where(o => o.Id==id)
+            .FirstOrDefaultAsync();
+
+        }
         // GET: Patients/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {

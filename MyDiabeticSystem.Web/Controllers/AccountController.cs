@@ -77,13 +77,16 @@ namespace MyDiabeticSystem.Web.Controllers
             if (ModelState.IsValid)
             {
                 var role = "Patient";
+                bool canEdit = false;
+
 
                 if(view.RoleId==1)
                 {
                     role = "Doctor";
+                    canEdit = true;
                 }
 
-                var user = await _userHelper.AddUser(view, role);
+                var user = await _userHelper.AddUser(view, role,canEdit);
                 if (user == null)
                 {
                     ModelState.AddModelError(string.Empty, "This email is already used.");
@@ -94,7 +97,7 @@ namespace MyDiabeticSystem.Web.Controllers
                 {
                     var doctor = new Doctor
                     {
-                        User = user,
+                        User = user,                        
                     };
                     _dataContext.Doctors.Add(doctor);
                 }
@@ -190,6 +193,7 @@ namespace MyDiabeticSystem.Web.Controllers
                 model.PhoneNumber = user.PhoneNumber;
                 model.FathersEmail = user.FathersEmail;
                 model.DateBirth = user.DateBirth;
+                model.Objective = user.Objective;
 
                 if(patient.Doctor==null)
                 {
@@ -233,6 +237,7 @@ namespace MyDiabeticSystem.Web.Controllers
                 patient.User.FathersEmail = model.FathersEmail;
                 patient.User.DateBirth = model.DateBirth;
                 patient.Doctor = await _dataContext.Doctors.FindAsync(model.DoctorId);
+                patient.User.Objective = model.Objective;
 
                 await _userHelper.UpdateUserAsync(patient.User);
                 return RedirectToAction("Index", "Home");
@@ -271,6 +276,6 @@ namespace MyDiabeticSystem.Web.Controllers
             return list;
         }
 
-        
+       
     }
 }
