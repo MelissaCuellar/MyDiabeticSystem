@@ -61,6 +61,14 @@ namespace MyDiabeticSystem.Web.Controllers
             
             double hb = 0, sum=0;
 
+            /*int hour = DateTime.Now.Hour;
+            var minute = DateTime.Now.Minute;
+
+            string h = "10:12";
+            DateTime hF = DateTime.Parse(h);
+            int hFinal = hF.Hour;*/
+            
+
             var cont =  _dataContext.Checks
                 .Include(p => p.Patient)
                 .Where(p => p.Patient.Id == patient.Id)
@@ -83,7 +91,9 @@ namespace MyDiabeticSystem.Web.Controllers
             var model = new AddCheckViewModel
             {
                 PatientId = patient.Id,
-                Hb1=hb,
+                Hb1 = hb,
+                Date = DateTime.Now,
+                Hour=DateTime.Now,
             };
 
             return View(model);
@@ -100,6 +110,8 @@ namespace MyDiabeticSystem.Web.Controllers
             {
                 var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
                 double objective = user.Objective;
+                int hour = model.Hour.Hour;
+
 
                 double sensibility = 0;
                 var sensibilities =  _dataContext.Sensibilities
@@ -107,7 +119,7 @@ namespace MyDiabeticSystem.Web.Controllers
                 .Where(p => p.Patient.Id == model.PatientId);
                 foreach(var s in sensibilities)
                 {
-                    if(DateTime.Now.Hour>=s.StartTime.Hour && DateTime.Now.Hour<=s.EndTime.Hour)
+                    if(hour>=s.StartTime.Hour && hour<=s.EndTime.Hour)
                     {
                         sensibility = s.Value;
                     }
@@ -119,7 +131,7 @@ namespace MyDiabeticSystem.Web.Controllers
                 .Where(p => p.Patient.Id == model.PatientId);
                 foreach (var r in ratios)
                 {
-                    if (DateTime.Now.Hour >= r.StartTime.Hour && DateTime.Now.Hour <= r.EndTime.Hour)
+                    if (hour >= r.StartTime.Hour && hour <= r.EndTime.Hour)
                     {
                         ratio = r.Value;
                     }
@@ -155,7 +167,8 @@ namespace MyDiabeticSystem.Web.Controllers
                 {
                     Carbohydrates = model.Carbohydrates,
                     Glucometry = model.Glucometry,
-                    Date = DateTime.Now,
+                    Date = model.Date,
+                    Hour = model.Hour,
                     Bolus = bolo,
                     Hb1 = hb,
                     Patient = await _dataContext.Patients.FindAsync(model.PatientId),

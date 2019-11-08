@@ -145,6 +145,8 @@ namespace MyDiabeticSystem.Web.Migrations
 
                     b.Property<double>("Hb1");
 
+                    b.Property<DateTime>("Hour");
+
                     b.Property<int?>("PatientId");
 
                     b.HasKey("Id");
